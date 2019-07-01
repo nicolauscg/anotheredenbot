@@ -1,4 +1,5 @@
 require(scriptPath() .. "constants")
+require(scriptPath() .. "functions")
 
 -- class Combat, represents sequence of actions done from start until end of combat
 Combat = {}
