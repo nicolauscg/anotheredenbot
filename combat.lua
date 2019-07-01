@@ -28,6 +28,7 @@ function Combat:start()
                 error("cannot determine if in battle or reward screen", 
                         reportError.toCurrentFunction)
             elseif currentState == 2 then -- if in rewardScreen
+                wait(1)
                 -- dismiss reward screen, combat finished
                 tapScreen()
                 break
