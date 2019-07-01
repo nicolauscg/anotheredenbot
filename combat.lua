@@ -76,6 +76,8 @@ function Turn:execute()
             wait(self.DELAY_BETWEEN_ACTION)
             clickRegion(GameRegion.skills[skillNumber])
             wait(self.DELAY_BETWEEN_ACTION)
+            tapScreen()
+            wait(self.DELAY_BETWEEN_ACTION)
         end
     end
     clickButton(Button.attack)
