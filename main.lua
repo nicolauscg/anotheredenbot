@@ -14,17 +14,25 @@ setImmersiveMode(true) -- whole screen as script area
 -- functions
 function main()
     dialogInit()
-    addRadioGroup("radioSelection", 1)
-    addRadioButton("test script", 1)
+    addRadioGroup("menu_scriptSelection", 1)
+    addRadioButton("farm mobs", 1)
     newRow()
-    dialogShow("farming bot")
+    dialogShow("bot main menu")
 
-    if radioSelection == 1 then
-        testScript()
+    if menu_scriptSelection == 1 then
+        farmMobScript()
     end
 end
 
-function testScript()
+function farmMobScript()
+    -- farm mobs menu
+    dialogInit()
+    addCheckBox("menu_farmMobs_haveFood", "food available", true)
+    newRow()
+    addTextView("number of battles before/after food")
+    addEditNumber("menu_farmMobs_battlesCount", 5)
+    dialogShow("farm mobs menu")
+
     local runningDirection = nil
     local combat = Combat:new(nil) -- setup skill selection
             :next( Turn:new(nil):setAllSkill(4,4,4,3) )
@@ -32,8 +40,10 @@ function testScript()
             :next( Turn:new(nil):setSkill(2,1) )
     local battlesCompletedCount = 0
     local foodEaten = false
+    local totalBattles = menu_farmMobs_haveFood and 
+            2*menu_farmMobs_battlesCount or menu_farmMobs_battlesCount
 
-    toast("starting")
+    toast("farming mobs")
     wait(1)
     while(true) do
         -- check if encounter monster
@@ -42,17 +52,18 @@ function testScript()
             combat:start()
             battlesCompletedCount = battlesCompletedCount + 1
         end 
-        -- eat food after 4 battles
-        if (not foodEaten and battlesCompletedCount == 4) then
-            wait(1)
+        -- eat food after battles if available
+        if (menu_farmMobs_haveFood and (not foodEaten) 
+                and battlesCompletedCount == menu_farmMobs_battlesCount) then
+            wait(2)
             useFood()
             foodEaten = true
         end
-        -- exit after 8 battles
-        if (battlesCompletedCount == 8) then
+        -- exit script
+        if (battlesCompletedCount == totalBattles) then
             wait(1)
             keyevent(3)
-            scriptExit("finished")
+            scriptExit("script finished")
         end
         wait(0.5)
         -- move left and right
