@@ -9,16 +9,20 @@ function Combat:new (o)
    self.__index = self
    self.turns = {}
    self.turn = 1
-   self.TIMEOUT = 10
+   self.TIMEOUT = 20
    return o
 end
+-- start executing skills in self.turns until battle is finished
 function Combat:start()
     if not isInState(GameState.inBattle, 1) then
         error("currently not in battle state", reportError.toCaller)
     end
+    if #self.turns == 0 then
+        self:addNextTurn(Turn:new(nil))
+    end
     self.turn = 1
-    do -- a block just to provide scope
-        local index = 1 -- array starts at index 1
+    do
+        local index = 1
         local turn = nil
         while(true) do
             toast("turn " .. self.turn)
@@ -28,9 +32,9 @@ function Combat:start()
             if currentState == -1 then
                 error("cannot determine if in battle or reward screen", 
                         reportError.toCurrentFunction)
-            elseif currentState == 2 then -- if in rewardScreen
+            -- if in reward screen, dismiss prompt, combat finished
+            elseif currentState == 2 then
                 wait(1)
-                -- dismiss reward screen, combat finished
                 tapScreen()
                 break
             end
@@ -40,9 +44,39 @@ function Combat:start()
         end
     end
 end
-function Combat:next(turn)
+-- set next turn of combat
+function Combat:addNextTurn(turn)
     table.insert(self.turns, turn)
     return self
+end
+-- set multiple next turns of combat, use space to seperate turns
+-- format of one turn: [0-4][0-4][0-4][0-4]
+-- valid example: "1234 0003 0010"
+function Combat:setWithString(string)
+    self:validateCombatStringInput(string)
+    for _, move in ipairs(split(string)) do
+        self:addNextTurn(Turn:new(nil):setAllSkill(
+            tonumber(move:sub(1,1)), tonumber(move:sub(2,2)), 
+            tonumber(move:sub(3,3)), tonumber(move:sub(4,4))
+        ))
+    end
+end
+function Combat:validateCombatStringInput(string)
+    for _, move in ipairs(split(string)) do
+        if #move ~= 4 then
+            error("each turn must be 4 digits")
+        end
+        if string.match(move, "[0-4][0-4][0-4][0-4]") == nil then
+            error("each turn consist of only digits 0 to 4")
+        end
+    end
+end
+function Combat:toString()
+    local string = ""
+    for _, turn in ipairs(self.turns) do
+        string = string .. string.format("%s\n", turn:toString())
+    end
+    return string
 end
 
 -- class Turn, represents skill selection of every character
@@ -50,29 +84,39 @@ end
 Turn = {}
 function Turn:new()
     newObj = {
-        charactersSkill = {nil,nil,nil,nil},
+        charactersSkill = {0,0,0,0},
         DELAY_BETWEEN_ACTION = 0.2
     }
     self.__index = self
     return setmetatable(newObj, self)
 end
+-- set character to use certain skill when executed
 function Turn:setSkill(characterNumber, skillNumber)
-    if not (1 <= characterNumber and characterNumber <= 4 and
-            1 <= skillNumber and skillNumber <= 4) then
-        error("characterNumber and skillNumber must be 1 to 4 inclusive", reportError.toCaller)
+    if not (1 <= characterNumber and characterNumber <= 4) then
+        error("characterNumber must be 1 to 4 inclusive", reportError.toCaller)
+    end
+    if not (0 <= skillNumber and skillNumber <= 4) then
+        error("skillNumber must be 0 to 4 inclusive", reportError.toCaller)
     end
     self.charactersSkill[characterNumber] = skillNumber
     return self
 end
+-- set all characters skills
 function Turn:setAllSkill(firstSkill, secondSkill, thirdSkill, fourthSkill)
+    for _, skill in ipairs({firstSkill, secondSkill, thirdSkill, fourthSkill}) do
+        if not (0 <= skill and skill <= 4) then
+            error("skillNumber must be 0 to 4 inclusive", reportError.toCaller)
+        end
+    end
     self.charactersSkill = {firstSkill, secondSkill, thirdSkill, fourthSkill}
     return self
 end
+-- execute clicks for skill selection of characters
 function Turn:execute()
     for i=1, 4 do
         local characterNumber = i
         local skillNumber = self.charactersSkill[characterNumber]
-        if skillNumber ~= nil then
+        if skillNumber ~= 0 then
             clickRegion(GameRegion.characters[characterNumber])
             wait(self.DELAY_BETWEEN_ACTION)
             clickRegion(GameRegion.skills[skillNumber])
@@ -82,4 +126,11 @@ function Turn:execute()
         end
     end
     clickButton(Button.attack)
+end
+function Turn:toString()
+    local string = ""
+    for char, skill in ipairs(self.charactersSkill) do
+        string = string .. string.format("%s[%s] ", char, skill)
+    end
+    return string
 end

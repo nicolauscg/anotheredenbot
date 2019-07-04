@@ -1,16 +1,12 @@
 require(scriptPath() .. "constants")
 require(scriptPath() .. "functions")
 
-function farmMobScript()
+function farmMobScript(combat, battleCount, willUseFood)
   local runningDirection = nil
-  local combat = Combat:new(nil) -- setup skill selection
-          :next( Turn:new(nil):setAllSkill(4,4,4,3) )
-          :next( Turn:new(nil):setSkill(1,1):setSkill(4,2) )
-          :next( Turn:new(nil):setSkill(2,1) )
-  local battlesCompletedCount = 0
+  local battlesCompleted = 0
   local foodEaten = false
-  local totalBattles = menu_farmMobs_haveFood and 
-          2*menu_farmMobs_battlesCount or menu_farmMobs_battlesCount
+  local totalBattles = willUseFood and 
+          2*battleCount or battleCount
 
   toast("farming mobs")
   wait(1)
@@ -19,20 +15,19 @@ function farmMobScript()
       if isInState(GameState.inBattle, 1) then
           toast("in combat")
           combat:start()
-          battlesCompletedCount = battlesCompletedCount + 1
+          battlesCompleted = battlesCompleted + 1
       end 
       -- eat food after battles if available
       if (menu_farmMobs_haveFood and (not foodEaten) 
-              and battlesCompletedCount == menu_farmMobs_battlesCount) then
+              and battlesCompleted == menu_farmMobs_battlesCount) then
           wait(2)
           useFood()
           foodEaten = true
       end
       -- exit script
-      if (battlesCompletedCount == totalBattles) then
+      if (battlesCompleted == totalBattles) then
           wait(1)
-          keyevent(3)
-          scriptExit("script finished")
+          return
       end
       wait(0.5)
       -- move left and right
