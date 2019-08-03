@@ -1,3 +1,4 @@
+require(scriptPath() .. "commonLib")
 require(scriptPath() .. "constants")
 
 function move(direction, duration)
@@ -13,9 +14,12 @@ function move(direction, duration)
   })
 end
 
+function moveInPixels(direction, length)
+  local duration = (length-10)/45
+  move(direction, duration)
+end
+
 function swipeTo(direction)
-  -- cant get this to work
-  -- move(direction, 0.1)
   local startLoc = GameRegion.tapAnyWhere:getCenter()
   local endLoc = startLoc:offset(direction.offset.x, direction.offset.y)
   swipe(startLoc, endLoc)
@@ -26,9 +30,11 @@ function clickRegion(region)
 end
 
 function clickButton(button, waitTime)
-  waitTime = waitTime or 1
+  waitTime = waitTime or 2
   if button.region:exists(Pattern(button.image), waitTime) then
       clickRegion(button.region)
+  else
+    error("button not found", reportError.toCaller)
   end
 end
 
@@ -37,7 +43,6 @@ function tapScreen()
 end
 
 function useFood()
-  toast("eating food")
   clickButton(Button.menu)
   clickButton(Button.food)
   clickButton(Button.use)
@@ -47,8 +52,36 @@ function useFood()
   tapScreen()
 end
 
+-- sometimes does not get marker's position
+function getPositionInMinimap()
+  clickRegion(GameRegion.minimapInCorner)
+  local index, id, match = regionWaitMulti({
+    {region=GameRegion.openedMinimap, image="marker_left.png"},
+    {region=GameRegion.openedMinimap, image="marker_right.png"}
+  }, 5)
+  tapScreen()
+  if index ~= -1 then
+    return match:getCenter()
+  else
+    return nil
+  end
+
+end
+
+function takeChest(chest, image)
+  chest.region:highlight(2)
+  local match = chest.region:exists(Pattern(image), 1)
+  if match ~= nil then
+    click(match:getCenter():offset(0, chest.offsetY))
+    wait(1)
+    tapScreen()
+  else
+    print("chest not found")
+  end
+end
+
 function isInState(gameState, waitTime)
-  waitTime = waitTime or 1
+  waitTime = waitTime or 2
   return gameState.region:exists(Pattern(gameState.image), waitTime)
 end
 

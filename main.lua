@@ -3,9 +3,8 @@ require(scriptPath() .. "constants")
 require(scriptPath() .. "functions")
 require(scriptPath() .. "combat")
 
--- vivo v11 pro resolution scaled to 1280px width
+-- script built for 1280x720 resolution
 scriptWidth = 1280
-scriptHeight = 591
 Settings:setScriptDimension(true, scriptWidth)
 Settings:setCompareDimension(true, scriptWidth)
 Settings:set("MinSimilarity", 0.7)
@@ -22,8 +21,9 @@ function main()
     addRadioButton("farm mobs", 1)
     addRadioButton("do another dungeon", 2)
     addRadioButton("set combat", 3)
+    addRadioButton("test", 4)
     newRow()
-    dialogShow("bot main menu")
+    dialogShowFullScreen("bot main menu")
 
     if menu_scriptSelection == 1 then
         farmMobsMenu()
@@ -31,6 +31,8 @@ function main()
         anotherDungeonMenu()
     elseif  menu_scriptSelection == 3 then
         combatMenu()
+    elseif  menu_scriptSelection == 4 then
+        test()
     end
 end
 
@@ -40,22 +42,36 @@ function farmMobsMenu()
     newRow()
     addTextView("number of battles before/after food")
     addEditNumber("menu_farmMobs_battlesCount", 5)
-    dialogShow("farm mobs menu")
+    dialogShowFullScreen("farm mobs menu")
 
     require(scriptPath() .. "farmMobs")
+    -- toast("farming mobs")
     farmMobScript(globalMobsCombat, menu_farmMobs_battlesCount, menu_farmMobs_haveFood)
     scriptExit("farm mobs finished")
 end
 
 function anotherDungeonMenu()
     dialogInit()
-    addRadioGroup("menu_anotherDungeon_scriptSelection", 1)
-    addRadioButton("man eating marsh", 1)
-    addRadioButton("saki dream world", 2)
+    addCheckBox("menu_anotherDungeon_battlesDone", "5 battles done?", false)
+    addTextView("current floor")
+    addEditNumber("menu_anotherDungeon_currentFloor", 1)
     newRow()
-    dialogShow("another dungeon menu")
-
-    scriptExit("not implemented yet")
+    addRadioGroup("menu_anotherDungeon_scriptSelection", 1)
+    addRadioButton("saki dream world", 1)
+    newRow()
+    dialogShowFullScreen("another dungeon menu")
+    
+    local dungeonMenuSelectionToFileName = {
+        "sakiDreamWorld"
+    }
+    require(scriptPath() .. "action")
+    require(scriptPath() .. "anotherDungeon")
+    
+    local anotherDungeonInfo = require(scriptPath() .. 
+            dungeonMenuSelectionToFileName[menu_anotherDungeon_scriptSelection])
+    dungeonScript(globalMobsCombat, globalBossCombat, anotherDungeonInfo, 
+        menu_anotherDungeon_currentFloor, menu_anotherDungeon_battlesDone)
+    scriptExit("another dungeon finished")
 end
 
 function combatMenu()
@@ -65,11 +81,15 @@ function combatMenu()
     newRow()
     addTextView("moves for boss")
     addEditText("menu_combat_bossStrategy", "")
-    dialogShow("combat menu")
+    dialogShowFullScreen("combat menu")
     globalMobsCombat:setWithString(menu_combat_mobsStrategy)
     globalBossCombat:setWithString(menu_combat_bossStrategy)
     -- go back to main menu
     main()
+end
+
+function test()
+    globalBossCombat:start()
 end
 
 main()

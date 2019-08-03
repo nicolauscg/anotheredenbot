@@ -60,6 +60,13 @@ function autoResize(target, defaultDimension, immersive, region)
 end
 
 -- ============= Image recognition related =============
+--[=[ 
+    method of Region to search more than one image for specifiend time
+    param   target  a table of element region, 
+                    image as keys and Region object, string image name as values
+    param   seconds duration to search for images
+    returns index of immage found else -1, id of element, Match object
+--]=]
 function regionWaitMulti(target, seconds, debug, skipLocation)
     local timer = Timer()
     local match

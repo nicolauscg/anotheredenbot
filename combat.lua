@@ -3,14 +3,14 @@ require(scriptPath() .. "functions")
 
 -- class Combat, represents sequence of actions done from start until end of combat
 Combat = {}
-function Combat:new (o)
-   o = o or {}
-   setmetatable(o, self)
-   self.__index = self
-   self.turns = {}
-   self.turn = 1
-   self.TIMEOUT = 20
-   return o
+function Combat:new()
+    newObj = {
+        turns = {},
+        turn = 1,
+        TURN_TIMEOUT = 30
+    }
+    self.__index = self
+    return setmetatable(newObj, self)
 end
 -- start executing skills in self.turns until battle is finished
 function Combat:start()
@@ -25,10 +25,11 @@ function Combat:start()
         local index = 1
         local turn = nil
         while(true) do
-            toast("turn " .. self.turn)
+            -- toast("turn " .. self.turn)
             turn = self.turns[index]
             turn:execute() -- keep executing last turn if battle not yet finished
-            currentState = regionWaitMulti({GameState.inBattle, GameState.inRewardScreen}, self.TIMEOUT)
+            -- toast(self.TURN_TIMEOUT)
+            currentState = regionWaitMulti({GameState.inBattle, GameState.inRewardScreen}, self.TURN_TIMEOUT)
             if currentState == -1 then
                 error("cannot determine if in battle or reward screen", 
                         reportError.toCurrentFunction)
@@ -70,6 +71,10 @@ function Combat:validateCombatStringInput(string)
             error("each turn consist of only digits 0 to 4")
         end
     end
+end
+function Combat:waitUntilStartOfTurnOrRewardScreen()
+    currentState = regionWaitMulti({GameState.inBattle, GameState.inRewardScreen}, self.TURN_TIMEOUT)
+
 end
 function Combat:toString()
     local string = ""
@@ -125,7 +130,7 @@ function Turn:execute()
             wait(self.DELAY_BETWEEN_ACTION)
         end
     end
-    clickButton(Button.attack)
+    clickButton(Button.attack, 2)
 end
 function Turn:toString()
     local string = ""
