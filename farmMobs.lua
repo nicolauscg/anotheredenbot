@@ -1,57 +1,54 @@
 require(scriptPath() .. "constants")
 require(scriptPath() .. "functions")
 
-function farmMobScript(combat, battleCount, willUseFood, alwaysMoveRightAfterBattle)
+function farmMobScript(combat, battleCount, willUseFood, moveDirectionAfterBattle)
   local runningDirection = nil
   local battlesCompleted = 0
-  local foodEaten = false
+  local isFoodAvailable = willUseFood
   local totalBattles = willUseFood and 
           2*battleCount or battleCount
   local noMoreEnemyTimeout = 45
+  -- true if moveDirectionAfterBattle is not nil else false
+  local willOverwriteDirection = moveDirectionAfterBattle and true or false
 
   local timer = Timer()
   while(true) do
-    -- exit farming if timeout
-    if timer:check() > noMoreEnemyTimeout then
-      if alwaysMoveRightAfterBattle then
-        move(Direction.right, 2)
-      else
-        move(Direction.left, 2)
-      end
-      print("no more enemy found, battled " .. battlesCompleted .. " times")
-      return
-    end
     -- determine running direction
-    if runningDirection ~= Direction.right then
-      runningDirection = Direction.right
+    if willOverwriteDirection and moveDirectionAfterBattle ~= nil then
+      runningDirection = moveDirectionAfterBattle
     else
-      runningDirection = Direction.left
+      if runningDirection ~= Direction.right then
+        runningDirection = Direction.right
+      else
+        runningDirection = Direction.left
+      end
     end
+    willOverwriteDirection = false
+    -- move left and right
+    wait(0.1)
+    move(runningDirection, 2)
     -- check monster encounter then battle
     if isInState(GameState.inBattle, 1) then
-      -- toast("in combat")
       combat:start()
-      battlesCompleted = battlesCompleted + 1
-      if alwaysMoveRightAfterBattle then
-        runningDirection = Direction.right
-      end
-      timer:set()
-    end 
-    -- use food if available
-    if (menu_farmMobs_haveFood and (not foodEaten) 
-        and battlesCompleted == menu_farmMobs_battlesCount) then
-      print("food consumed")
       wait(2)
-      useFood()
-      foodEaten = true
+      willOverwriteDirection = true
+      battlesCompleted = battlesCompleted + 1
+      timer:set() -- reset timer
     end
-    -- move left and right
-    wait(0.5)
-    move(runningDirection, 2)
+    -- use food if available
+    if (isFoodAvailable and battlesCompleted == battleCount) then
+      print("food consumed")
+      useFood()
+      isFoodAvailable = false
+    end
     -- exit script if all battle completed
     if (battlesCompleted == totalBattles) then
-      print("battled " .. battlesCompleted .. "times")
-      wait(1)
+      print("battled " .. battlesCompleted .. " times")
+      return
+    end
+    -- exit farming if timeout
+    if timer:check() > noMoreEnemyTimeout then
+      print("no more enemy found, battled " .. battlesCompleted .. " times")
       return
     end
   end

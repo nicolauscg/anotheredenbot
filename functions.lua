@@ -30,16 +30,44 @@ function clickRegion(region)
 end
 
 function clickButton(button, waitTime)
-  waitTime = waitTime or 2
-  if button.region:exists(Pattern(button.image), waitTime) then
-      clickRegion(button.region)
+  local waitTime = waitTime or 2
+  local match = button.region:exists(Pattern(button.image), waitTime)
+  if match ~= nil then
+      clickRegion(match)
   else
-    error("button not found", reportError.toCaller)
+    error("button " .. button.name .." not found", reportError.toCaller)
   end
 end
 
 function tapScreen()
   clickRegion(GameRegion.tapAnyWhere)
+end
+
+function repeatedTap(times, interval)
+  tapScreen()
+  for i=1,(times-1) do
+    wait(interval)
+    tapScreen()
+  end
+end
+
+function getFoodFromInn(dialogLocation, isPromisedFruit)
+  if not isPromisedFruit then
+    swipeTo(Direction.up)
+    wait(1)
+  end
+  click(dialogLocation)
+  wait(0.2)
+  tapScreen()
+  clickButton(Button.yes)
+  if isPromisedFruit then
+    wait(3)
+    tapScreen()
+  else
+    wait(10)
+    repeatedTap(5, 1)
+  end
+  print("got food from inn")
 end
 
 function useFood()
@@ -50,6 +78,7 @@ function useFood()
   tapScreen()
   wait(2)
   tapScreen()
+  print("food used")
 end
 
 -- sometimes does not get marker's position
@@ -65,26 +94,14 @@ function getPositionInMinimap()
   else
     return nil
   end
-
-end
-
-function takeChest(chest, image)
-  chest.region:highlight(2)
-  local match = chest.region:exists(Pattern(image), 1)
-  if match ~= nil then
-    click(match:getCenter():offset(0, chest.offsetY))
-    wait(1)
-    tapScreen()
-  else
-    print("chest not found")
-  end
 end
 
 function isInState(gameState, waitTime)
-  waitTime = waitTime or 2
+  local waitTime = waitTime or 2
   return gameState.region:exists(Pattern(gameState.image), waitTime)
 end
 
+-- helper function to split string
 function split(inputstr, sep)
   if sep == nil then
           sep = "%s"

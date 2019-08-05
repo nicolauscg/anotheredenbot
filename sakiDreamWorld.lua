@@ -59,7 +59,7 @@ sakiDreamWorld.moves = {
     Action:new(nil, takeChest, Chest.leftSide, sakiDreamWorld.chestImages.regular),
     Action:new(nil, moveInPixels, Direction.right, 72),
     Action:new(nil, swipeTo, Direction.up),
-    Action:new(nil, moveInPixels, Direction.right, 49)
+    Action:new(nil, moveInPixels, Direction.right, 53)
   },
   {
     Action:new(nil, move, Direction.left, 0.5),

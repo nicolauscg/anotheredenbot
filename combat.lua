@@ -25,17 +25,18 @@ function Combat:start()
         local index = 1
         local turn = nil
         while(true) do
-            -- toast("turn " .. self.turn)
+            print("turn " .. self.turn)
             turn = self.turns[index]
             turn:execute() -- keep executing last turn if battle not yet finished
-            -- toast(self.TURN_TIMEOUT)
+            wait(2)
+            local debugTimer = Timer()
             currentState = regionWaitMulti({GameState.inBattle, GameState.inRewardScreen}, self.TURN_TIMEOUT)
             if currentState == -1 then
                 error("cannot determine if in battle or reward screen", 
                         reportError.toCurrentFunction)
             -- if in reward screen, dismiss prompt, combat finished
             elseif currentState == 2 then
-                wait(1)
+                print("battle finished")
                 tapScreen()
                 break
             end
@@ -89,8 +90,7 @@ end
 Turn = {}
 function Turn:new()
     newObj = {
-        charactersSkill = {0,0,0,0},
-        DELAY_BETWEEN_ACTION = 0.2
+        charactersSkill = {0,0,0,0}
     }
     self.__index = self
     return setmetatable(newObj, self)
@@ -118,19 +118,21 @@ function Turn:setAllSkill(firstSkill, secondSkill, thirdSkill, fourthSkill)
 end
 -- execute clicks for skill selection of characters
 function Turn:execute()
+    if not isInState(GameState.inBattle) then
+        error("trying to call Turn:execute() while not in battle", 
+                reportError.toCurrentFunction)
+    end
     for i=1, 4 do
         local characterNumber = i
         local skillNumber = self.charactersSkill[characterNumber]
         if skillNumber ~= 0 then
             clickRegion(GameRegion.characters[characterNumber])
-            wait(self.DELAY_BETWEEN_ACTION)
             clickRegion(GameRegion.skills[skillNumber])
-            wait(self.DELAY_BETWEEN_ACTION)
             tapScreen()
-            wait(self.DELAY_BETWEEN_ACTION)
         end
     end
-    clickButton(Button.attack, 2)
+    wait(0.2)
+    clickButton(Button.attack, 3)
 end
 function Turn:toString()
     local string = ""

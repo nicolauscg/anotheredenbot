@@ -11,26 +11,22 @@ Settings:set("MinSimilarity", 0.7)
 Settings:set("AutoWaitTimeout", 0.3)
 setImmersiveMode(true) -- whole screen as script area
 
-globalMobsCombat = Combat:new(nil)
-globalBossCombat = Combat:new(nil)
-
--- functions
 function main()
     dialogInit()
     addRadioGroup("menu_scriptSelection", 1)
     addRadioButton("farm mobs", 1)
-    addRadioButton("do another dungeon", 2)
-    addRadioButton("set combat", 3)
-    addRadioButton("test", 4)
+    addRadioButton("farm exp", 2)
+    addRadioButton("do another dungeon", 3)
+    addRadioButton("test (for development)", 4)
     newRow()
     dialogShowFullScreen("bot main menu")
 
     if menu_scriptSelection == 1 then
         farmMobsMenu()
     elseif  menu_scriptSelection == 2 then
-        anotherDungeonMenu()
+        farmExpMenu()
     elseif  menu_scriptSelection == 3 then
-        combatMenu()
+        anotherDungeonMenu()
     elseif  menu_scriptSelection == 4 then
         test()
     end
@@ -44,15 +40,27 @@ function farmMobsMenu()
     addEditNumber("menu_farmMobs_battlesCount", 5)
     dialogShowFullScreen("farm mobs menu")
 
+    local mobsCombat = combatSetterMenu(true)
     require(scriptPath() .. "farmMobs")
-    -- toast("farming mobs")
-    farmMobScript(globalMobsCombat, menu_farmMobs_battlesCount, menu_farmMobs_haveFood)
+    farmMobScript(mobsCombat, menu_farmMobs_battlesCount, menu_farmMobs_haveFood)
     scriptExit("farm mobs finished")
+end
+
+function farmExpMenu()
+    dialogInit()
+    addTextView("no of battles before/after food")
+    addEditNumber("menu_farmExp_battleCount", 5)
+    dialogShowFullScreen("Farm EXP")
+    
+    local mobsCombat = combatSetterMenu(true)
+    require(scriptPath() .. "farmExp")
+    farmExp(mobsCombat, menu_farmExp_battleCount)
 end
 
 function anotherDungeonMenu()
     dialogInit()
     addCheckBox("menu_anotherDungeon_battlesDone", "5 battles done?", false)
+    newRow()
     addTextView("current floor")
     addEditNumber("menu_anotherDungeon_currentFloor", 1)
     newRow()
@@ -61,35 +69,42 @@ function anotherDungeonMenu()
     newRow()
     dialogShowFullScreen("another dungeon menu")
     
+    local mobsCombat, bossCombat = combatSetterMenu(false)
+    -- dictionary of menu_anotherDungeon_scriptSelection to
+    -- respective AD info files
     local dungeonMenuSelectionToFileName = {
         "sakiDreamWorld"
     }
     require(scriptPath() .. "action")
     require(scriptPath() .. "anotherDungeon")
-    
     local anotherDungeonInfo = require(scriptPath() .. 
             dungeonMenuSelectionToFileName[menu_anotherDungeon_scriptSelection])
-    dungeonScript(globalMobsCombat, globalBossCombat, anotherDungeonInfo, 
+    dungeonScript(mobsCombat, bossCombat, anotherDungeonInfo, 
         menu_anotherDungeon_currentFloor, menu_anotherDungeon_battlesDone)
     scriptExit("another dungeon finished")
 end
 
-function combatMenu()
+function combatSetterMenu(willSetMobsOnly)
     dialogInit()
     addTextView("moves for mobs")
     addEditText("menu_combat_mobsStrategy", "")
-    newRow()
-    addTextView("moves for boss")
-    addEditText("menu_combat_bossStrategy", "")
-    dialogShowFullScreen("combat menu")
-    globalMobsCombat:setWithString(menu_combat_mobsStrategy)
-    globalBossCombat:setWithString(menu_combat_bossStrategy)
-    -- go back to main menu
-    main()
+    if not willSetMobsOnly then
+        newRow()
+        addTextView("moves for boss")
+        addEditText("menu_combat_bossStrategy", "")
+    end
+    dialogShowFullScreen("Combat")
+    mobsCombat = Combat:new(nil)
+    mobsCombat:setWithString(menu_combat_mobsStrategy)
+    if not willSetMobsOnly then
+        bossCombat = Combat:new(nil)
+        bossCombat:setWithString(menu_combat_bossStrategy)
+    end
+    return mobsCombat, bossCombat
 end
 
 function test()
-    globalBossCombat:start()
+    print("for debugging purposes during development")
 end
 
 main()
