@@ -2,17 +2,20 @@ require(scriptPath() .. "constants")
 require(scriptPath() .. "functions")
 require(scriptPath() .. "action")
 
-function dungeonScript(mobsComat, bossCombat, dungeonInfo, currentFloor, isBattlesDone, difficulty, alreadyInDungeon)
+function dungeonScript(mobsComat, bossCombat, dungeonInfo, currentFloor, 
+      isBattlesDone, difficulty, alreadyInDungeon)
   local startingFloor = alreadyInDungeon and currentFloor or 1
   if not alreadyInDungeon then
     getPromisedFruitThenEnterDoor()
     selectSakiDreamWorld(difficulty)
   end
 
-  clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo, startingFloor, isBattlesDone)
+  clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo, 
+      startingFloor, isBattlesDone)
 end
 
-function clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo, currentFloor, isBattlesDone)
+function clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo, 
+      currentFloor, isBattlesDone)
   local willClearMobs = not isBattlesDone
 
   for floor=currentFloor,3 do

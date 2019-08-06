@@ -1,4 +1,5 @@
 -- @author AnkuLua, Nicolaus
+-- https://github.com/AnkuLua/commonLib
 
 -- ============= dimension related =============
 function autoResize(target, defaultDimension, immersive, region)

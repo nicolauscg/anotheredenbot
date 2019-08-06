@@ -1,7 +1,8 @@
 require(scriptPath() .. "constants")
 require(scriptPath() .. "functions")
 
-function farmMobScript(combat, battleCount, willUseFood, moveDirectionAfterBattle)
+function farmMobScript(combat, battleCount, willUseFood, 
+      moveDirectionAfterBattle)
   local runningDirection = nil
   local battlesCompleted = 0
   local isFoodAvailable = willUseFood
