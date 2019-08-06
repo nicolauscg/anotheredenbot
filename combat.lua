@@ -41,7 +41,7 @@ function Combat:start()
       -- if in reward screen, dismiss prompt, combat finished
       elseif currentState == 2 then
         print("battle finished")
-        wait(1)
+        wait(2)
         tapScreen()
         break
       end
