@@ -50,11 +50,14 @@ function farmExpMenu()
   dialogInit()
   addTextView("no of battles before/after food")
   addEditNumber("menu_farmExp_battleCount", 5)
+  newRow()
+  addTextView("farm duration in minutes")
+  addEditNumber("menu_farmExp_farmDuration", 30)
   dialogShowFullScreen("Farm EXP")
   
   local mobsCombat = combatSetterMenu(true)
   require(scriptPath() .. "farmExp")
-  farmExp(mobsCombat, menu_farmExp_battleCount)
+  farmExp(mobsCombat, menu_farmExp_battleCount, menu_farmExp_farmDuration*60)
 end
 
 function anotherDungeonMenu()

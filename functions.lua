@@ -119,3 +119,10 @@ function split(inputstr, sep)
   end
   return t
 end
+
+-- format seconds integer to string with format MM:SS
+function formatSecondsToMinuteSecondString(seconds)
+  local sec = math.floor(seconds%60)
+  local min = math.floor(seconds/60)
+  return string.format("%02d:%02d", min, sec)
+end

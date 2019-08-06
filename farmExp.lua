@@ -2,9 +2,17 @@ require(scriptPath() .. "constants")
 require(scriptPath() .. "functions")
 require(scriptPath() .. "farmMobs")
 
-function farmExp(combat, battleCount)
+function farmExp(combat, battleCount, durationInSeconds)
   local dialogLocation = Location(293, 53)
+  local durationLeft = nil
+  local durationTimer = Timer()
+
   while(true) do
+    if durationInSeconds - durationTimer:check() <= 0 then
+      print("farm duration finished " .. 
+          formatSecondsToMinuteSecondString(durationTimer:check()))
+      return
+    end
     getFoodFromInn(dialogLocation)
     wait(2)
     fromRindeGoToBeastKingCastle()
@@ -12,7 +20,8 @@ function farmExp(combat, battleCount)
     wait(0.5)
     swipeTo(Direction.up)
     wait(3)
-    farmMobScript(combat, battleCount, true)
+    farmMobScript(combat, battleCount, true, nil, 
+        durationInSeconds - durationTimer:check())
     fromBeastKingCastleGoToRinde()
   end
 end
