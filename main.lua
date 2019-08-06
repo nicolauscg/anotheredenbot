@@ -59,6 +59,14 @@ end
 
 function anotherDungeonMenu()
     dialogInit()
+    addCheckBox("menu_anotherDungeon_alreadyInDungeon", 
+            "already in dungeon?", false)
+    newRow()
+    addTextView("difficulty")
+    addRadioGroup("menu_anotherDungeon_difficulty", 2)
+    addRadioButton("hard", 1)
+    addRadioButton("very hard", 2)
+    newRow()
     addCheckBox("menu_anotherDungeon_battlesDone", "5 battles done?", false)
     newRow()
     addTextView("current floor")
@@ -75,12 +83,20 @@ function anotherDungeonMenu()
     local dungeonMenuSelectionToFileName = {
         "sakiDreamWorld"
     }
+    local difficulty = nil
+    if menu_anotherDungeon_difficulty == 1 then
+        difficulty = AnotherDungeonDifficulty.hard
+    elseif menu_anotherDungeon_difficulty == 2 then
+        difficulty = AnotherDungeonDifficulty.veryHard
+    end
+
     require(scriptPath() .. "action")
     require(scriptPath() .. "anotherDungeon")
     local anotherDungeonInfo = require(scriptPath() .. 
             dungeonMenuSelectionToFileName[menu_anotherDungeon_scriptSelection])
     dungeonScript(mobsCombat, bossCombat, anotherDungeonInfo, 
-        menu_anotherDungeon_currentFloor, menu_anotherDungeon_battlesDone)
+        menu_anotherDungeon_currentFloor, menu_anotherDungeon_battlesDone, 
+        difficulty, menu_anotherDungeon_alreadyInDungeon)
     scriptExit("another dungeon finished")
 end
 

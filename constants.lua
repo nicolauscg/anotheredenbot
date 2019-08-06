@@ -21,6 +21,7 @@ GameRegion = {
     useButtonInUseFoodPrompt = Region(674, 401, 220, 50),
     yesButton = Region(655, 253, 248, 253),
     mapButton = Region(252, 638, 50, 49),
+    moveButton = Region(677, 616, 212, 53),
     -- tap anywhere location
     tapAnyWhere = Region(802, 182, 216, 248),
     -- chests
@@ -33,7 +34,9 @@ GameRegion = {
     congratulationScreen = Region(307, 100, 673, 54),
     -- minimap
     minimapInCorner = Region(1041, 35, 198, 103),
-    openedMinimap = Region(342, 219, 590, 258)
+    openedMinimap = Region(342, 219, 590, 258),
+    -- others
+    doorAD = Region(203, 117, 488, 80)
 }
 
 -- direction for movement and swiping actions
@@ -85,6 +88,17 @@ Button = {
         region = GameRegion.yesButton,
         image = "yes_button.jpg",
         name = "yes"
+    },
+    -- move button prompt when going to selected AD
+    move = {
+        region = GameRegion.moveButton,
+        image = "move_button.jpg",
+        name = "move"
+    },
+    doorAD = {
+        region = GameRegion.doorAD,
+        image = "AD_door.jpg",
+        name = "AD door"
     }
 }
 
@@ -119,6 +133,15 @@ Chest = {
     middle = {
         region = GameRegion.middleChestRegion,
         offsetY = -154
+    }
+}
+
+AnotherDungeonDifficulty = {
+    hard = {
+        location = Location(758, 301)
+    },
+    veryHard = {
+        location = Location(766, 447)
     }
 }
 

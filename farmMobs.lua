@@ -37,7 +37,7 @@ function farmMobScript(combat, battleCount, willUseFood, moveDirectionAfterBattl
     end
     -- use food if available
     if (isFoodAvailable and battlesCompleted == battleCount) then
-      print("food consumed")
+      print("consuming food")
       useFood()
       isFoodAvailable = false
     end

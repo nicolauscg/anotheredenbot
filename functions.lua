@@ -57,16 +57,18 @@ function getFoodFromInn(dialogLocation, isPromisedFruit)
     wait(1)
   end
   click(dialogLocation)
-  wait(0.2)
+  wait(0.5)
   tapScreen()
+  wait(0.5)
   clickButton(Button.yes)
   if isPromisedFruit then
-    wait(3)
-    tapScreen()
+    wait(4)
+    repeatedTap(3, 1)
   else
     wait(10)
     repeatedTap(5, 1)
   end
+  wait(2)
   print("got food from inn")
 end
 
@@ -98,7 +100,12 @@ end
 
 function isInState(gameState, waitTime)
   local waitTime = waitTime or 2
-  return gameState.region:exists(Pattern(gameState.image), waitTime)
+  local match = gameState.region:exists(Pattern(gameState.image), waitTime)
+  if match ~= nil then
+    return true
+  else
+    return false
+  end
 end
 
 -- helper function to split string
