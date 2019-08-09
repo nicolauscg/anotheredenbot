@@ -20,8 +20,7 @@ function farmExp(combat, battleCount, durationInSeconds)
     wait(0.5)
     swipeTo(Direction.up)
     wait(3)
-    farmMobScript(combat, battleCount, true, nil, 
-        durationInSeconds - durationTimer:check())
+    farmMobScript(combat, battleCount, true)
     fromBeastKingCastleGoToRinde()
   end
 end

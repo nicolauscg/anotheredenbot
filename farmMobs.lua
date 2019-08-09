@@ -2,11 +2,7 @@ require(scriptPath() .. "constants")
 require(scriptPath() .. "functions")
 
 function farmMobScript(combat, battleCount, willUseFood, 
-      moveDirectionAfterBattle, durationInSeconds)
-  if durationInSeconds and durationInSeconds <= 0 then
-    return
-  end
-
+      moveDirectionAfterBattle)
   local runningDirection = nil
   local battlesCompleted = 0
   local isFoodAvailable = willUseFood
@@ -16,7 +12,6 @@ function farmMobScript(combat, battleCount, willUseFood,
   -- true if moveDirectionAfterBattle is not nil else false
   local willOverwriteDirection = moveDirectionAfterBattle and true or false
 
-  local durationTimer = Timer()
   local noMoreEnemyTimer = Timer()
   while(true) do
     -- determine running direction
@@ -55,11 +50,6 @@ function farmMobScript(combat, battleCount, willUseFood,
     -- exit farming if timeout
     if noMoreEnemyTimer:check() > noMoreEnemyTimeout then
       print("no more enemy found, battled " .. battlesCompleted .. " times")
-      return
-    end
-    if durationInSeconds ~= nil and 
-        durationTimer:check() > durationInSeconds then
-      print("duration timeout, battled " .. battlesCompleted .. " times")
       return
     end
   end

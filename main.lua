@@ -51,7 +51,7 @@ function farmExpMenu()
   addTextView("no of battles before/after food")
   addEditNumber("menu_farmExp_battleCount", 5)
   newRow()
-  addTextView("farm duration in minutes")
+  addTextView("approx farm duration in minutes")
   addEditNumber("menu_farmExp_farmDuration", 30)
   dialogShowFullScreen("Farm EXP")
   
