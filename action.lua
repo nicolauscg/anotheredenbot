@@ -2,7 +2,7 @@ require(scriptPath() .. "constants")
 
 -- wrapper for functions to be executed later
 Action = {}
-function Action:new(o, func, ...)
+function Action:new(func, ...)
   newObj = {
     func = func or nil,
     args = {...} or {}

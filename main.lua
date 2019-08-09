@@ -117,10 +117,10 @@ function combatSetterMenu(willSetMobsOnly)
     addEditText("menu_combat_bossStrategy", "")
   end
   dialogShowFullScreen("Combat")
-  mobsCombat = Combat:new(nil)
+  mobsCombat = Combat:new()
   mobsCombat:setWithString(menu_combat_mobsStrategy)
   if not willSetMobsOnly then
-    bossCombat = Combat:new(nil)
+    bossCombat = Combat:new()
     bossCombat:setWithString(menu_combat_bossStrategy)
   end
   return mobsCombat, bossCombat

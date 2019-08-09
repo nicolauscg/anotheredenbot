@@ -19,7 +19,7 @@ function Combat:start()
     error("currently not in battle state", reportError.toCaller)
   end
   if #self.turns == 0 then
-    self:addNextTurn(Turn:new(nil))
+    self:addNextTurn(Turn:new())
   end
   self.turn = 1
   do
@@ -61,7 +61,7 @@ end
 function Combat:setWithString(string)
   self:validateCombatStringInput(string)
   for _, move in ipairs(split(string)) do
-    self:addNextTurn(Turn:new(nil):setAllSkill(
+    self:addNextTurn(Turn:new():setAllSkill(
       tonumber(move:sub(1,1)), tonumber(move:sub(2,2)), 
       tonumber(move:sub(3,3)), tonumber(move:sub(4,4))
     ))
