@@ -62,21 +62,25 @@ end
 
 function anotherDungeonMenu()
   dialogInit()
-  addCheckBox("menu_anotherDungeon_alreadyInDungeon", 
-      "already in dungeon?", false)
+  addTextView("number of dungeon runs")
+  addEditNumber("menu_anotherDungeon_repeatTimes", 1)
+  newRow()
+  addTextView("another dungeon")
+  newRow()
+  addRadioGroup("menu_anotherDungeon_scriptSelection", 1)
+  addRadioButton("saki dream world", 1)
   newRow()
   addTextView("difficulty")
   addRadioGroup("menu_anotherDungeon_difficulty", 2)
   addRadioButton("hard", 1)
   addRadioButton("very hard", 2)
   newRow()
+  addTextView("-- if error happened during run --")
+  newRow()
   addCheckBox("menu_anotherDungeon_battlesDone", "5 battles done?", false)
   newRow()
   addTextView("current floor")
   addEditNumber("menu_anotherDungeon_currentFloor", 1)
-  newRow()
-  addRadioGroup("menu_anotherDungeon_scriptSelection", 1)
-  addRadioButton("saki dream world", 1)
   newRow()
   dialogShowFullScreen("another dungeon menu")
   
@@ -99,7 +103,7 @@ function anotherDungeonMenu()
       dungeonMenuSelectionToFileName[menu_anotherDungeon_scriptSelection])
   dungeonScript(mobsCombat, bossCombat, anotherDungeonInfo, 
       menu_anotherDungeon_currentFloor, menu_anotherDungeon_battlesDone, 
-      difficulty, menu_anotherDungeon_alreadyInDungeon)
+      difficulty, menu_anotherDungeon_repeatTimes)
   scriptExit("another dungeon finished")
 end
 
@@ -123,7 +127,7 @@ function combatSetterMenu(willSetMobsOnly)
 end
 
 function test()
-    print("for debugging purposes during development")
+  print("for debugging purposes during development")
 end
 
 main()

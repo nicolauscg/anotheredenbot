@@ -62,7 +62,5 @@ function farmMobScript(combat, battleCount, willUseFood,
       print("duration timeout, battled " .. battlesCompleted .. " times")
       return
     end
-    
   end
-  
 end

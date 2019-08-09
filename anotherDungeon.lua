@@ -3,15 +3,25 @@ require(scriptPath() .. "functions")
 require(scriptPath() .. "action")
 
 function dungeonScript(mobsComat, bossCombat, dungeonInfo, currentFloor, 
-      isBattlesDone, difficulty, alreadyInDungeon)
-  local startingFloor = alreadyInDungeon and currentFloor or 1
-  if not alreadyInDungeon then
-    getPromisedFruitThenEnterDoor()
-    selectSakiDreamWorld(difficulty)
-  end
+      isBattlesDone, difficulty, repeatTimes)
+  print("dungeonScript start")
+  local ADTimer = Timer()
+  local repeatTimes = repeatTimes or 1
+  for i=1,repeatTimes do
+    print("starting run #" .. i)
+    ADTimer:set()
+    if i ~= 1 then
+      print("travel by map")
+      normalizePositionInSpacetimeRift()
+      getPromisedFruitThenEnterDoor()
+      selectSakiDreamWorld(difficulty)
+    end
 
-  clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo, 
-      startingFloor, isBattlesDone)
+    clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo, 
+        currentFloor, isBattlesDone)
+    print(string.format("finished run #%s in %s", 
+        i, formatSecondsToMinuteSecondString(ADTimer:check())))
+  end
 end
 
 function clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo, 
@@ -47,12 +57,6 @@ function clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo,
 end
 
 function getPromisedFruitThenEnterDoor()
-  clickButton(Button.map)
-  wait(3)
-  click(Location(640, 395))
-  tapScreen()
-  clickButton(Button.yes)
-  wait(3)
   getFoodFromInn(Location(433, 55), true)
   move(Direction.left, 0.5)
   wait(1)
@@ -100,13 +104,14 @@ function dismissCongratulationScreen()
     tapScreen()
   end
   for i=1,2 do -- for dismissing light/shadow and white card
-    wait(2)
+    wait(2) -- not yet thoroughly tested
     if isInState(GameState.inCongratulationScreen, 2) then
       tapScreen()
     end
   end
   wait(2)
-  move(Direction.right, 0.2)
+  -- move right to prevent nameless girl dialog bubble interfering
+  move(Direction.right, 0.2) 
   wait(1)
   local congratAtScreen = isInState(GameState.inCongratulationScreen)
   local doorAtScreen = isInState(Button.doorAD)
@@ -119,3 +124,11 @@ function dismissCongratulationScreen()
   end
 end
 
+function normalizePositionInSpacetimeRift()
+  clickButton(Button.map)
+  wait(3)
+  click(Location(629, 384))
+  clickButton(Button.yes)
+  wait(3)
+  print("travelled to spacetime rift")
+end

@@ -36,7 +36,8 @@ GameRegion = {
   minimapInCorner = Region(1041, 35, 198, 103),
   openedMinimap = Region(342, 219, 590, 258),
   -- others
-  doorAD = Region(203, 117, 488, 80)
+  doorAD = Region(203, 117, 488, 80),
+  partyHealedScreen = Region(274, 63, 735, 39)
 }
 
 -- direction for movement and swiping actions
@@ -107,15 +108,28 @@ Button = {
 GameState = {
   inBattle = {
     region = GameRegion.attackButton,
-    image = "attack_button.jpg"
+    image = "attack_button.jpg",
+    name = "in battle"
   },
   inRewardScreen = {
     region = GameRegion.rewardRegion,
-    image = "combat_end.jpg"
+    image = "combat_end.jpg",
+    name = "reward screen"
   },
   inCongratulationScreen = {
     region = GameRegion.congratulationScreen,
-    image = "congratulation.jpg"
+    image = "congratulation.jpg",
+    name = "congratulation screen"
+  },
+  inDefaultScreen = {
+    region = GameRegion.menuButton,
+    image = "menu_button.jpg",
+    name = "default screen when not moving"
+  },
+  inPartyHealedScreen = {
+    region = GameRegion.partyHealedScreen,
+    image = "restored.jpg",
+    name = "party healed screen"
   }
 }
 

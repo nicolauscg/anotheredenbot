@@ -54,19 +54,22 @@ end
 function getFoodFromInn(dialogLocation, isPromisedFruit)
   if not isPromisedFruit then
     swipeTo(Direction.up)
-    wait(1)
+    -- wait for menu button and dialog bubble
+    waitUntilInState(GameState.inDefaultScreen, 3)
   end
   click(dialogLocation)
-  wait(0.5)
   tapScreen()
-  wait(0.5)
   clickButton(Button.yes)
   if isPromisedFruit then
-    wait(4)
+    wait(1)
+    waitUntilInState(GameState.inPartyHealedScreen, 3)
     repeatedTap(3, 1)
   else
-    wait(10)
-    repeatedTap(5, 1)
+    wait(9)
+    waitUntilInState(GameState.inPartyHealedScreen, 3)
+    tapScreen()
+    wait(2) -- wait for dialog text
+    repeatedTap(3, 1)
   end
   wait(2)
   print("got food from inn")
@@ -105,6 +108,14 @@ function isInState(gameState, waitTime)
     return true
   else
     return false
+  end
+end
+
+function waitUntilInState(gameState, waitTime)
+  local waitTime = waitTime or 2
+  if not isInState(gameState, waitTime) then
+    error(string.format("state %s not reached after %d seconds", 
+        gameState.name, waitTime))
   end
 end
 

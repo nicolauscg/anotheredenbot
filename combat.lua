@@ -30,7 +30,6 @@ function Combat:start()
       turn = self.turns[index]
       turn:execute() -- keep executing last turn if battle not yet finished
       wait(2)
-      local debugTimer = Timer()
       currentState = regionWaitMulti(
         {GameState.inBattle, GameState.inRewardScreen}, 
         self.TURN_TIMEOUT
