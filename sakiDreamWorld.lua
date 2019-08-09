@@ -1,5 +1,6 @@
 require(scriptPath() .. "constants")
 require(scriptPath() .. "functions")
+require(scriptPath() .. "action")
 
 local sakiDreamWorld = {}
 

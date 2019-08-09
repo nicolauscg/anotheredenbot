@@ -58,6 +58,7 @@ function getFoodFromInn(dialogLocation, isPromisedFruit)
     waitUntilInState(GameState.inDefaultScreen, 3)
   end
   click(dialogLocation)
+  wait(0.5)
   tapScreen()
   clickButton(Button.yes)
   if isPromisedFruit then
@@ -75,10 +76,17 @@ function getFoodFromInn(dialogLocation, isPromisedFruit)
   print("got food from inn")
 end
 
-function useFood()
+function useFood(isInAnotherDungeon)
+  isInAnotherDungeon = isInAnotherDungeon or false
+  local button = isInAnotherDungeon and Button.foodAD or Button.food
   clickButton(Button.menu)
-  clickButton(Button.food)
-  clickButton(Button.use)
+  clickButton(button)
+  if not pcall(function() clickButton(Button.use) end) then
+    print("food unavailable")
+    tapScreen()
+    wait(0.5)
+    return
+  end
   wait(2)
   tapScreen()
   wait(2)
@@ -122,11 +130,11 @@ end
 -- helper function to split string
 function split(inputstr, sep)
   if sep == nil then
-          sep = "%s"
+    sep = "%s"
   end
   local t={}
   for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-          table.insert(t, str)
+    table.insert(t, str)
   end
   return t
 end

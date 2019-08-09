@@ -26,7 +26,8 @@ function Combat:start()
     local index = 1
     local turn = nil
     while(true) do
-      print("turn " .. self.turn)
+      print(string.format("turn %s: %s", 
+          self.turn, self.turns[index]:toString()))
       turn = self.turns[index]
       turn:execute() -- keep executing last turn if battle not yet finished
       wait(2)

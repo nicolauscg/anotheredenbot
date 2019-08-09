@@ -37,7 +37,8 @@ GameRegion = {
   openedMinimap = Region(342, 219, 590, 258),
   -- others
   doorAD = Region(203, 117, 488, 80),
-  partyHealedScreen = Region(274, 63, 735, 39)
+  partyHealedScreen = Region(274, 63, 735, 39),
+  obtainedWhiteKey = Region(426, 422, 351, 38)
 }
 
 -- direction for movement and swiping actions
@@ -130,6 +131,11 @@ GameState = {
     region = GameRegion.partyHealedScreen,
     image = "restored.jpg",
     name = "party healed screen"
+  },
+  inObtainedWhiteKeyScreen = {
+    region = GameRegion.obtainedWhiteKey,
+    image = "white_key.jpg",
+    name = "got white key screen"
   }
 }
 
