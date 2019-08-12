@@ -11,10 +11,13 @@ function dungeonScript(mobsComat, bossCombat, dungeonInfo, currentFloor,
     print("starting run #" .. i)
     ADTimer:set()
     if i ~= 1 then
+      isBattlesDone = false
+      currentFloor = 1
       print("travel by map")
-      normalizePositionInSpacetimeRift()
+      retravelToSpacetimeRift()
       getPromisedFruitThenEnterDoor()
-      selectSakiDreamWorld(difficulty)
+      dungeonInfo.selectDungeon()
+      selectDifficulty(difficulty)
     end
 
     clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo, 
@@ -29,16 +32,16 @@ function clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo,
   local willClearMobs = not isBattlesDone
 
   for floor=currentFloor,3 do
+    local moveDirection = dungeonInfo.moveDirectionAfterCombat[floor]
     print("in floor " .. floor)
     if willClearMobs then
       require(scriptPath() .. "farmMobs")
-      farmMobScript(mobsComat, 5, false, Direction.right)
-      move(Direction.right, 2)
+      farmMobScript(mobsComat, 5, false, moveDirection)
+      move(moveDirection, 2)
     end
     for _, action in ipairs(dungeonInfo.moves[floor]) do
       action:execute()
     end
-    swipeTo(Direction.up)
     wait(1)
     willClearMobs = true
   end
@@ -57,6 +60,13 @@ function clearAnotherDungeon(mobsComat, bossCombat, dungeonInfo,
   dismissCongratulationScreen()
 end
 
+function selectDifficulty(difficulty)
+  click(difficulty.location)
+  wait(1)
+  clickButton(Button.move)
+  wait(1)
+end
+
 function getPromisedFruitThenEnterDoor()
   getFoodFromInn(Location(433, 55), true)
   move(Direction.left, 0.5)
@@ -65,23 +75,11 @@ function getPromisedFruitThenEnterDoor()
   wait(2)
 end
 
-function selectSakiDreamWorld(difficulty)
-  click(Location(319, 118)) -- click future timeline
-  wait(2)
-  click(Location(645, 418)) -- click IDA school
-  wait(1)
-  click(Location(649, 504)) -- click saki dream world
-  wait(1)
-  click(difficulty.location) -- click difficulty
-  wait(1)
-  clickButton(Button.move)
-end
-
 function takeChest(chest, image)
   local match = chest.region:exists(Pattern(image), 1)
   if match ~= nil then
     click(match:getCenter():offset(0, chest.offsetY))
-    wait(1)
+    wait(1.5)
     tapScreen()
     print("chest taken")
   else
@@ -102,12 +100,14 @@ function dismissCongratulationScreen()
   -- dismiss shadow/light gain screen
   if isInState(GameState.inCongratulationScreen, 2) then
     print("got light/shadow")
+    wait(2)
     tapScreen()
     wait(2)
   end
   -- dismiss white key
   if isInState(GameState.inObtainedWhiteKeyScreen, 2) then
     print("got white key")
+    wait(2)
     tapScreen()
     wait(2)
   end
@@ -121,11 +121,11 @@ function dismissCongratulationScreen()
   end
 end
 
-function normalizePositionInSpacetimeRift()
+function retravelToSpacetimeRift()
   clickButton(Button.map)
   wait(3)
   click(Location(629, 384))
   clickButton(Button.yes)
   wait(3)
-  print("travelled to spacetime rift")
+  print("retravelled to spacetime rift")
 end

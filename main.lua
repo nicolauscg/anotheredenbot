@@ -69,9 +69,10 @@ function anotherDungeonMenu()
   newRow()
   addRadioGroup("menu_anotherDungeon_scriptSelection", 1)
   addRadioButton("saki dream world", 1)
+  addRadioButton("miglace labyrinth", 2)
   newRow()
   addTextView("difficulty")
-  addRadioGroup("menu_anotherDungeon_difficulty", 2)
+  addRadioGroup("menu_anotherDungeon_difficulty", 1)
   addRadioButton("hard", 1)
   addRadioButton("very hard", 2)
   newRow()
@@ -88,7 +89,8 @@ function anotherDungeonMenu()
   -- dictionary of menu_anotherDungeon_scriptSelection to
   -- respective AD info files
   local dungeonMenuSelectionToFileName = {
-    "sakiDreamWorld"
+    "sakiDreamWorld",
+    "miglaceLabyrinth"
   }
   local difficulty = nil
   if menu_anotherDungeon_difficulty == 1 then

@@ -25,9 +25,9 @@ GameRegion = {
   -- tap anywhere location
   tapAnyWhere = Region(802, 182, 216, 248),
   -- chests
-  leftChestRegion = Region(170, 392, 382, 95),
-  rightChestRegion = Region(802, 392, 366, 95),
-  middleChestRegion = Region(255, 342, 527, 83),
+  leftChestRegion = Region(170, 372, 495, 115),
+  rightChestRegion = Region(673, 372, 495, 115),
+  middleChestRegion = Region(255, 312, 527, 113),
   -- after battle screen
   rewardRegion = Region(22, 37, 92, 83),
   -- another dungeon complete screen

@@ -4,6 +4,20 @@ require(scriptPath() .. "action")
 
 local sakiDreamWorld = {}
 
+sakiDreamWorld.selectDungeon = function()
+  wait(1)
+  click(Location(645, 418)) -- click IDA school
+  wait(1)
+  click(Location(649, 504)) -- click saki dream world
+  wait(1)
+end
+
+sakiDreamWorld.moveDirectionAfterCombat = {
+  Direction.right,
+  Direction.right,
+  Direction.right
+}
+
 sakiDreamWorld.chestImages = {
   regular="saki_chest.jpg",
   boss="saki_chest_boss.jpg"
@@ -11,7 +25,7 @@ sakiDreamWorld.chestImages = {
 
 sakiDreamWorld.moves = {
   {
-    Action:new(moveInPixels, Direction.right, 102),
+    Action:new(moveInPixels, Direction.right, 164),
     Action:new(moveInPixels, Direction.left, 102),
     Action:new(swipeTo, Direction.up),
     Action:new(moveInPixels, Direction.left, 78),
@@ -28,7 +42,8 @@ sakiDreamWorld.moves = {
     Action:new(swipeTo, Direction.up),
     Action:new(moveInPixels, Direction.right, 87),
     Action:new(swipeTo, Direction.up),
-    Action:new(moveInPixels, Direction.right, 64)
+    Action:new(moveInPixels, Direction.right, 64),
+    Action:new(swipeTo, Direction.up)
   },
   {
     Action:new(moveInPixels, Direction.right, 160),
@@ -38,7 +53,8 @@ sakiDreamWorld.moves = {
     Action:new(swipeTo, Direction.up),
     Action:new(moveInPixels, Direction.left, 86),
     Action:new(takeChest, Chest.leftSide, sakiDreamWorld.chestImages.regular),
-    Action:new(moveInPixels, Direction.right, 315)
+    Action:new(moveInPixels, Direction.right, 315),
+    Action:new(swipeTo, Direction.up)
   },
   {
     Action:new(moveInPixels, Direction.right, 55),
@@ -60,7 +76,8 @@ sakiDreamWorld.moves = {
     Action:new(takeChest, Chest.leftSide, sakiDreamWorld.chestImages.regular),
     Action:new(moveInPixels, Direction.right, 72),
     Action:new(swipeTo, Direction.up),
-    Action:new(moveInPixels, Direction.right, 53)
+    Action:new(moveInPixels, Direction.right, 53),
+    Action:new(swipeTo, Direction.up)
   },
   {
     Action:new(move, Direction.left, 0.5),

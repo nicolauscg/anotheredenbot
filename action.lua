@@ -1,5 +1,3 @@
-require(scriptPath() .. "constants")
-
 -- wrapper for functions to be executed later
 Action = {}
 function Action:new(func, ...)
@@ -11,5 +9,6 @@ function Action:new(func, ...)
   return setmetatable(newObj, self)
 end
 function Action:execute()
-  self:func(table.unpack(args))
+  self.func(unpack(self.args))
+  wait(1)
 end
